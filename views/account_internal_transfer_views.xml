@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Tree View -->
+    <record id="view_account_internal_transfer_tree" model="ir.ui.view">
+        <field name="name">account.internal.transfer.tree</field>
+        <field name="model">account.internal.transfer</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name" decoration-bf="1"/>
+                <field name="payment_journal_id"/>
+                <field name="journal_id"/>
+                <field name="amount"/>
+                <field name="settlement_charge_percent"/>
+                <field name="settlement_charge"/>
+                <field name="net_amount"/>
+                <field name="state" widget="badge" decoration-info="state == 'draft'" decoration-success="state == 'transferred'"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_account_internal_transfer_form" model="ir.ui.view">
+        <field name="name">account.internal.transfer.form</field>
+        <field name="model">account.internal.transfer</field>
+        <field name="arch" type="xml">
+            <form string="Internal Transfer" class="kio_internal_transfer_form">
+                <header>
+                    <button name="action_reset_to_draft"
+                            type="object"
+                            string="Reset to Draft"
+                            invisible="state != 'transferred'"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+
+                <sheet>
+                    <div class="kio_transfer_topbar">
+                        <button name="action_view_history"
+                                type="object"
+                                class="oe_stat_button kio_top_button"
+                                icon="fa-history"
+                                invisible="history_count == 0">
+                            <field name="history_count" widget="statinfo" string="Journal Entry"/>
+                        </button>
+                    </div>
+
+                    <div class="kio_transfer_card">
+                        <div class="kio_transfer_card_header">
+                            <div class="kio_transfer_identity">
+                                <div class="kio_transfer_identity_icon">
+                                    <i class="fa fa-university"/>
+                                </div>
+                                <div class="kio_transfer_identity_body">
+                                    <div class="oe_title">
+                                        <h1>
+                                            <field name="name" readonly="1" nolabel="1"/>
+                                        </h1>
+                                    </div>
+                                    <div class="kio_transfer_state_badge" invisible="state != 'transferred'">
+                                        <i class="fa fa-circle"/>
+                                        <span>Transferred</span>
+                                    </div>
+                                    <div class="kio_transfer_state_badge kio_transfer_state_badge_draft" invisible="state != 'draft'">
+                                        <i class="fa fa-circle"/>
+                                        <span>Draft</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="kio_transfer_meta">
+                                <div class="kio_meta_item">
+                                    <div class="kio_meta_icon">
+                                        <i class="fa fa-calendar"/>
+                                    </div>
+                                    <div class="kio_meta_content">
+                                        <span class="kio_meta_label">Date</span>
+                                        <field name="date" readonly="1" nolabel="1" class="oe_inline"/>
+                                    </div>
+                                </div>
+
+                                <button name="action_view_history"
+                                        type="object"
+                                        class="btn btn-secondary kio_history_button"
+                                        invisible="history_count == 0">
+                                    <i class="fa fa-history"/>
+                                    <span>Journal Entry</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="kio_transfer_grid">
+                            <div class="kio_transfer_column">
+                                <div class="kio_info_row">
+                                    <div class="kio_info_icon"><i class="fa fa-credit-card"/></div>
+                                    <div class="kio_info_label">Payment Method</div>
+                                    <div class="kio_info_value" invisible="state == 'transferred'">
+                                        <field name="payment_journal_id" options="{'no_create_edit': True}" nolabel="1"/>
+                                    </div>
+                                    <div class="kio_info_value" invisible="state != 'transferred'">
+                                        <field name="payment_journal_id" readonly="1" nolabel="1" class="oe_inline"/>
+                                    </div>
+                                </div>
+                                <div class="kio_info_row">
+                                    <div class="kio_info_icon"><i class="fa fa-calendar"/></div>
+                                    <div class="kio_info_label">Date</div>
+                                    <div class="kio_info_value" invisible="state == 'transferred'">
+                                        <field name="date" nolabel="1"/>
+                                    </div>
+                                    <div class="kio_info_value" invisible="state != 'transferred'">
+                                        <field name="date" readonly="1" nolabel="1" class="oe_inline"/>
+                                    </div>
+                                </div>
+                                <div class="kio_info_row">
+                                    <div class="kio_info_icon"><i class="fa fa-money"/></div>
+                                    <div class="kio_info_label">Amount</div>
+                                    <div class="kio_info_value" invisible="state == 'transferred'">
+                                        <field name="amount" nolabel="1"/>
+                                    </div>
+                                    <div class="kio_info_value" invisible="state != 'transferred'">
+                                        <field name="amount" readonly="1" nolabel="1" class="oe_inline"/>
+                                    </div>
+                                </div>
+                                <div class="kio_info_row kio_info_row_last">
+                                    <div class="kio_info_icon"><i class="fa fa-calculator"/></div>
+                                    <div class="kio_info_label">Settlement Charge</div>
+                                    <div class="kio_info_value">
+                                        <field name="settlement_charge" readonly="1" nolabel="1" class="oe_inline"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="kio_transfer_column">
+                                <div class="kio_info_row">
+                                    <div class="kio_info_icon"><i class="fa fa-university"/></div>
+                                    <div class="kio_info_label">Bank Journal</div>
+                                    <div class="kio_info_value" invisible="state == 'transferred'">
+                                        <field name="journal_id" options="{'no_create_edit': True}" nolabel="1"/>
+                                    </div>
+                                    <div class="kio_info_value" invisible="state != 'transferred'">
+                                        <field name="journal_id" readonly="1" nolabel="1" class="oe_inline"/>
+                                    </div>
+                                </div>
+                                <div class="kio_info_row">
+                                    <div class="kio_info_icon"><i class="fa fa-percent"/></div>
+                                    <div class="kio_info_label">Settlement Charge (%)</div>
+                                    <div class="kio_info_value" invisible="state == 'transferred'">
+                                        <field name="settlement_charge_percent" nolabel="1"/>
+                                    </div>
+                                    <div class="kio_info_value" invisible="state != 'transferred'">
+                                        <field name="settlement_charge_percent" readonly="1" nolabel="1" class="oe_inline"/>
+                                    </div>
+                                </div>
+                                <div class="kio_info_row kio_info_row_last">
+                                    <div class="kio_info_icon"><i class="fa fa-usd"/></div>
+                                    <div class="kio_info_label">Net Amount</div>
+                                    <div class="kio_info_value">
+                                        <field name="net_amount" readonly="1" nolabel="1" class="oe_inline"/>
+                                    </div>
+                                </div>
+
+                                <div class="kio_info_row">
+                                    <div class="kio_info_icon"><i class="fa fa-exchange"/></div>
+                                    <div class="kio_info_label">Transaction ID</div>
+                                    <div class="kio_info_value" invisible="state == 'transferred'">
+                                        <field name="transaction" nolabel="1"/>
+                                    </div>
+                                    <div class="kio_info_value" invisible="state != 'transferred'">
+                                        <field name="transaction" readonly="1" nolabel="1" class="oe_inline"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="kio_transfer_footer" invisible="state == 'transferred'">
+                            <div class="kio_footer_metric">
+                                <span class="kio_footer_metric_label">Total Amount</span>
+                                <field name="amount" readonly="1" nolabel="1" class="oe_inline"/>
+                            </div>
+                            <div class="kio_footer_metric">
+                                <span class="kio_footer_metric_label">Settlement Charge</span>
+                                <field name="settlement_charge" readonly="1" nolabel="1" class="oe_inline"/>
+                            </div>
+                            <div class="kio_footer_metric">
+                                <span class="kio_footer_metric_label">Settlement Charge (%)</span>
+                                <field name="settlement_charge_percent" readonly="1" nolabel="1" class="oe_inline"/>
+                            </div>
+                            <div class="kio_footer_metric">
+                                <span class="kio_footer_metric_label">Net Amount</span>
+                                <field name="net_amount" readonly="1" nolabel="1" class="oe_inline"/>
+                            </div>
+                            <button name="action_transfer"
+                                    type="object"
+                                    string="Transfer"
+                                    class="btn btn-primary kio_transfer_action"/>
+                        </div>
+                    </div>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_account_internal_transfer" model="ir.actions.act_window">
+        <field name="name">Internal Transfer</field>
+        <field name="res_model">account.internal.transfer</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Menu -->
+    <menuitem id="menu_account_internal_transfer"
+              name="Internal Transfer"
+              parent="account.menu_finance_entries"
+              action="action_account_internal_transfer"
+              sequence="13"/>
+
+</odoo>
