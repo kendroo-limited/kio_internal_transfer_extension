@@ -92,7 +92,7 @@
                             <div class="kio_transfer_column">
                                 <div class="kio_info_row">
                                     <div class="kio_info_icon"><i class="fa fa-credit-card"/></div>
-                                    <div class="kio_info_label">Payment Method</div>
+                                    <div class="kio_info_label">Sending Account</div>
                                     <div class="kio_info_value" invisible="state == 'transferred'">
                                         <field name="payment_journal_id" options="{'no_create_edit': True}" nolabel="1"/>
                                     </div>
@@ -132,7 +132,7 @@
                             <div class="kio_transfer_column">
                                 <div class="kio_info_row">
                                     <div class="kio_info_icon"><i class="fa fa-university"/></div>
-                                    <div class="kio_info_label">Bank Journal</div>
+                                    <div class="kio_info_label">Receiving Account</div>
                                     <div class="kio_info_value" invisible="state == 'transferred'">
                                         <field name="journal_id" options="{'no_create_edit': True}" nolabel="1"/>
                                     </div>
